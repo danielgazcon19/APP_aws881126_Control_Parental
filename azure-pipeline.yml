@@ -1,0 +1,31 @@
+name: $(Build.SourceBranchName).$(date:yyyyMMdd)$(rev:.r)
+
+variables:
+    - name: Artifactory.Repository
+      value: 'APP_aws881126_Control_Parental'
+
+trigger:
+    branches:
+        include:
+            - trunk
+            - feature/*
+
+resources:
+    - repo: self
+      clean: all
+      fetchDepth: 1
+
+stages:
+    - stage: Build
+      displayName: Build and Publish
+      jobs:
+          - job: Linux
+            displayName: Build and publication of artifact
+            pool:
+                name: Release-cloud
+                demands:
+                  - Agent.OS -equals Linux 
+                    
+            steps:
+                - template: pipelines/build.yml
+                - template: pipelines/deploy.yml

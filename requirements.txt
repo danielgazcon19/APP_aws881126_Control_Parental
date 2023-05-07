@@ -1,0 +1,27 @@
+pandas
+requests
+pytest-testinfra
+pipenv
+pytest
+pytest-cov
+nose
+coverage
+nosexcover
+pylint
+boto3== 1.20.9
+pytest-mock==3.6.1
+pytest-ordering
+pytest-xdist
+surer
+freezegun
+black==22.3.0
+flake8==4.0.1
+flake8-print
+flake8-use-fstring
+click
+inflection
+lxml
+mypy
+packaging
+build
+prompt_toolkit

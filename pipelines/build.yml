@@ -1,0 +1,56 @@
+steps:
+    - task: SonarQubePrepare@4
+      displayName: 'Prepare analysis on SonarQube'
+      inputs:
+          SonarQube: SonarQube
+          scannerMode: CLI
+          configMode: manual
+          cliProjectKey: '$(Build.Repository.Name)'
+          cliProjectName: '$(Build.Repository.Name)'
+          cliProjectVersion: '$(Build.BuildNumber)'
+          cliSources: '$(System.DefaultWorkingDirectory)'
+          extraProperties: |
+             sonar.projectBaseDir=$(System.DefaultWorkingDirectory)
+             sonar.branch.name=$(Build.SourceBranchName)
+             sonar.sources=./src
+             sonar.python.coverage.reportPaths=coverage.xml
+             sonar.python.xunit.reportPath=out_report.xml
+             sonar.language=py
+
+    - script: apt-get update
+      displayName: 'Update'
+
+    - script: pip3 install -r $(System.DefaultWorkingDirectory)/requirements.txt
+
+    - script: apt-get update
+      displayName: 'Update'
+    
+    - script: apt-get install make python3.8 python3.8-venv python3.8-dev python3-pip
+      displayName: 'Install make and python3.8 packages'
+
+    - script: pip3 install pipenv flake8
+      displayName: 'Install Python deps'
+
+    - script: python3 --version
+      displayName: 'Python Version'
+
+    - script: |
+        export LC_ALL=C.UTF-8
+        make init
+        make test
+      displayName: 'Build'
+    
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage from coverage.xml'
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: 'coverage.xml'
+      continueOnError: true
+
+    - task: SonarQubeAnalyze@4
+      displayName: 'Run Code Analysis'
+
+    - task: SimondeLang.sonar-buildbreaker.sonar-buildbreaker.sonar-buildbreaker@8
+      displayName: 'Break build on quality gate failure'
+      inputs:
+        SonarQube: SonarQube

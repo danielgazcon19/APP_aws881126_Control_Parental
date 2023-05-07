@@ -1,0 +1,36 @@
+steps:
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: src
+        contents: '*'
+        targetFolder: $(Build.ArtifactStagingDirectory)      
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive Files'
+      inputs:
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildNumber)src.zip'
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+          PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildNumber)src.zip
+          ArtifactName: Artifact
+
+    - task: ArtifactoryGenericUpload@1
+      displayName: 'Publish Artifact to Artifactory'
+      inputs:
+          artifactoryService: Artifactory
+          fileSpec: |
+              {
+                "files": [
+                  {
+                    "pattern": "$(Build.ArtifactStagingDirectory)/*.zip",
+                    "target": "build-$(Artifactory.Repository)/$(Build.BuildNumber)/"
+                  }
+                ]
+              }
+          collectBuildInfo: true

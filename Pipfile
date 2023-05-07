@@ -1,0 +1,42 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = false
+name = "pypi"
+
+[packages]
+pytest = "==6.2.4"
+mock="*"
+moto="*"
+pytest-mock = "==3.6.1"
+boto3 = "*"
+botocore="*"
+requests="*"
+xmltodict = "*"
+zeep = "*"
+pylint = "*"
+nosexcover = "*"
+coverage = "*"
+nose = "*"
+pytest-cov = "*"
+pipenv = "*"
+bs4 = "*"
+
+[dev-packages]
+mock="*"
+moto="*"
+core="*"
+boto3="*"
+docker="*"
+boto="*"
+botocore="*"
+sure="*"
+pytest="*"
+pytest-cov="*"
+nose="*"
+coverage="*"
+nosexcover="*"
+pylint="*"
+ldap3="*"
+
+[requires]
+python_version = "3.7"
